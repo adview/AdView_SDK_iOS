@@ -1,0 +1,41 @@
+<script src="mraid.js"></script>
+<script type="text/javascript" src="http://webfile.adview.cn/h5web/jquery-3.2.1.min.js"></script>
+<div id="adviewMainDiv"></div>
+<iframe id="adviewMainIframe" scrolling="no" frameBorder="0"></iframe>
+<script type="text/javascript">
+
+this.AdviewAdTagConfig = {
+"appId":"SDK20181307010915r33neefl9j79y91",
+"packageName":"%%BUNDLE%%",
+"placementType":1,
+"width":300,
+"height":250,
+"os":0,
+"uuid":"%eudid!",
+"carrier":"%%CARRIER%%",
+"network":"%%NETWORK%%",
+"latitude":"%%LATITUDE%%",
+"longitude":"%%LONGITUDE%%",
+"country":"%%COUNTRY%%",
+"osVer":"%%OSVER%%",
+"testMode":0,
+"async":false
+};
+this.AdTagEventListener = {
+onAdLoaded: function(msg) {
+/*This event will be called when an ad is loaded sucessfully. */
+console.log("onAdLoaded: " + msg);
+},
+onAdError: function(msg) {
+/*This event will be called if requesting ad is timed out. */
+console.error("onAdError: " + msg);
+trackImpressionHelper = null;
+loaded=true;
+mraid.unload();
+window.location="mopub://failLoad";
+
+
+}
+};
+</script>
+<script type="text/javascript" src="http://webfile.adview.cn/h5web/adviewJS.js"></script>

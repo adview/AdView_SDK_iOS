@@ -1,0 +1,96 @@
+// 20190820171959
+// http://gbjtest.adview.com/agent/getAd?bi=com.snda.wifilocating&an=null&aid=SDK201915200308249k8otx1tqhcn6yw&posId=POSIDenuw55tx9d0h&sv=402&cv=0&sy=0&st=6&as=&ac=1&at=0&tm=0&se=&ti=1566292012&ud=0000000000000000&to=4dd1924479ab7f8c1be6c217cc05fa40&re=1080x2160&ro=1&dt=AndroidSDKbuiltforx86&db=Google&lat=37.421998333333335&lon=-122.08400000000002&nt=WIFI&src=1&du=0&gd=8484e0f2-70b1-427f-9c62-2b6d1941add6&ua=Mozilla%2F5.0+%28Linux%3B+Android+9%3B+Android+SDK+built+for+x86+Build%2FPSR1.180720.093%3B+wv%29+AppleWebKit%2F537.36+%28KHTML%2C+like+Gecko%29+Version%2F4.0+Chrome%2F69.0.3497.100+Mobile+Safari%2F537.36&andid=672bbad0043ddc63&html5=0&deny=2.75&blac=&cid=&ov=&mc=&av=1.0&bty=100&supGdtUrl=1&agadn=1006,1007&apt=0&hv=0&gdpr=0&consent=0
+
+{
+  "sc": 0,
+  "res": 1,
+  "sgt": 0,
+  "ac": 1,
+  "ad": [
+    {
+      "ast": "",
+      "adLogo": "http://gbjbid.adview.com/images/adlogo.png",
+      "dai": "",
+      "dan": "",
+      "atc": "",
+      "posId": "POSIDenuw55tx9d0h",
+      "giu": "",
+      "adid": "",
+      "act": 1,
+      "ate": "",
+      "adomain": [
+        null
+      ],
+      "native": {
+        "ompara": "",
+        "video": {
+	"xmltype":1,
+	"vastxml":"<VAST version='2.0'></VAST>"
+	},
+        "images": [
+          {
+            "w": 1200,
+            "h": 627,
+            "url": "https://res1.applovin.com/od8456f5/0d465ccbda883cf34379e79ec35c2a4703b3f239_v21_phone.jpg"
+          }
+        ],
+        "pimage": "http://gbjtest.adview.com/web/common/images/favicon.ico",
+        "icon": {
+          "w": 300,
+          "h": 300,
+          "url": "https://res1.applovin.com/od8456f5/7c2268a2d1be4245d24ef554f8a58acb02ffff93_v21_phone.jpg"
+        },
+        "title": "Cooking Fever",
+        "pclick": "https://www.adview.com/optout",
+        "omurl": "",
+        "omvendor": "",
+        "desc": "Cook delicious meals and desserts from all over the world!"
+      },
+      "adIcon": "http://gbjbid.adview.com/images/adicon.png",
+      "das": 0,
+      "ati": "",
+      "auctionType": 1,
+      "impid": "20190820-171959_reqimpPOSIDenuw55tx9d0h_242-1190-nHiS-0",
+      "ec": [
+        "http://gbjtest.adview.com/agent/click?st=6&uuidEncType=0&sv=402&crid=adview_native_88aacc&src=10002&sy=0&nt=WIFI&adi=20190820-171959__242-1191-cR54-2_1&bi=com.snda.wifilocating&ai=M3FTrmwBAABRDUMSclAYQRZVcsoOc7ZG1t8h3Ppw6Yz-IMg5ObgRHYzGcNLw_bTEaOba2wJA-Q2zQ-o3A5augcXbS2ZQfB6bJ1JUlw9Ib_Aq7LUzR0qEax3vdmPjXPi-J-RXbnPtk8eiqXnKi-YlQ5qkaD2Exnfu9GMJoJzlH35m9FJld1PlCEenPf_-Bu9hkWvp3yhI7umeyyv5Kw6kUtbYTjT2l4bN8rPZtodDPUR_upYUEOz9NrgeXoQSMc7PJJWl5wvVyts7ivTtK_GWviWX-ZqyHm9gRWqz4Q&ud=8484e0f2-70b1-427f-9c62-2b6d1941add6&andt=1&as=&se=&adid=&cv=0&rqt=0&ti=1566292804&tm=0&to=d2f153cab8d749626da1ba04ce824ee1&aid=SDK201915200308249k8otx1tqhcn6yw&ro=1&ca=0&cid="
+      ],
+      "cnl": 3,
+      "su": "http://gbjtest.adview.com/",
+      "abc": "",
+      "dpn": "",
+      "crid": "adview_native_88aacc",
+      "src": 10002,
+      "adi": "20190820-171959__242-1191-cR54-2_1",
+      "ai": "M3FTrmwBAABRDUMSclAYQRZVcsoOc7ZG1t8h3Ppw6Yz-IMg5ObgRHYzGcNLw_bTEaOba2wJA-Q2zQ-o3A5augcXbS2ZQfB6bJ1JUlw9Ib_Aq7LUzR0qEax3vdmPjXPi-J-RXbnPtk8eiqXnKi-YlQ5qkaD2Exnfu9GMJoJzlH35m9FJld1PlCEenPf_-Bu9hkWvp3yhI7umeyyv5Kw6kUtbYTjT2l4bN8rPZtodDPUR_upYUEOz9NrgeXoQSMc7PJJWl5wvVyts7ivTtK_GWviWX-ZqyHm9gRWqz4Q",
+      "abi": "",
+      "al": "https://itunes.apple.com/app/id714796093",
+      "materialSize": "0x0",
+      "es": {
+        "0": [
+          "http://gbjtest.adview.com/agent/display?st=6&uuidEncType=0&sv=402&crid=adview_native_88aacc&src=10002&sy=0&nt=WIFI&adi=20190820-171959__242-1191-cR54-2_1&bi=com.snda.wifilocating&ai=M3FTrmwBAABRDUMSclAYQRZVcsoOc7ZG1t8h3Ppw6Yz-IMg5ObgRHYzGcNLw_bTEaOba2wJA-Q2zQ-o3A5augcXbS2ZQfB6bJ1JUlw9Ib_Aq7LUzR0qEax3vdmPjXPi-J-RXbnPtk8eiqXnKi-YlQ5qkaD2Exnfu9GMJoJzlH35m9FJld1PlCEenPf_-Bu9hkWvp3yhI7umeyyv5Kw6kUtbYTjT2l4bN8rPZtodDPUR_upYUEOz9NrgeXoQSMc7PJJWl5wvVyts7ivTtK_GWviWX-ZqyHm9gRWqz4Q&ud=8484e0f2-70b1-427f-9c62-2b6d1941add6&andt=1&as=&se=&adid=&cv=0&rqt=0&ti=1566292804&tm=0&to=d2f153cab8d749626da1ba04ce824ee1&aid=SDK201915200308249k8otx1tqhcn6yw&ro=1&ca=0&cid="
+        ]
+      },
+      "reqId": "20190820-171959_openBidReq_242-1191-x0tX-1",
+      "seat": "AdViewTest",
+      "lurl": "",
+      "as": "0x0",
+      "at": 8,
+      "aca": [
+        {
+          "abc": "",
+          "aibc": "",
+          "amtc": "",
+          "aabc": "",
+          "astc": "",
+          "afc": ""
+        }
+      ],
+      "cid": ""
+    }
+  ],
+  "la": "",
+  "ti": 1566292799,
+  "mg": "",
+  "ctl": "eyJsb2ciOjB9",
+  "agt": 0
+}

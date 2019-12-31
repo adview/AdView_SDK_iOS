@@ -1,0 +1,13 @@
+//
+// Prefix header for all source files of the 'AdViewHello' target in the 'AdViewHello' project
+//
+
+#ifdef __OBJC__
+#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
+#import "AdView/AdViewDefines.h"
+
+#define ScreenWidth [UIScreen mainScreen].bounds.size.width
+#define ScreenHeight [UIScreen mainScreen].bounds.size.height
+
+#endif

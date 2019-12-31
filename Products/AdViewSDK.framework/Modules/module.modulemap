@@ -1,0 +1,6 @@
+framework module AdViewSDK {
+  umbrella header "AdViewSDK.h"
+
+  export *
+  module * { export * }
+}
