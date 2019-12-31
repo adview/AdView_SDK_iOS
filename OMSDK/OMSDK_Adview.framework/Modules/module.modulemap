@@ -1,0 +1,4 @@
+module OMSDK_Adview {
+    header "Headers/OMIDImports.h"
+    export *
+}
