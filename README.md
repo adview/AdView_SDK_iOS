@@ -6,7 +6,7 @@ The AdView SDK provides a simple way to help application developers monetize the
 Sign up for an account at [https://www.adview.com/](https://www.adview.com/).
 
 ## Need Help?
-You can find [integration documentation](https://github.com/adview/AdView_SDK_iOS/blob/master/Document/AdView%20Auction%20SDK%20Specification_iOS_V.4.0.0.pdf) or email [partner@adview.com](mailto:partner@adview.com) to file an issue with our team.
+You can find [integration documentation](https://github.com/adview/AdView_SDK_iOS/blob/master/AdView%20iOS%20SDK%20Integration%20Guide.pdf) or email [partner@adview.com](mailto:partner@adview.com) to file an issue with our team.
 
 ## News in this Version
   - Added VPAID support for vast video mode.
