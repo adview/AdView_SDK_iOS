@@ -251,27 +251,27 @@ static const int requestItemSize = sizeof(requestItems)/sizeof(AVRequestItem);
     NSString *token = [AdViewExtTool getMd5HexString:[NSString stringWithFormat:@"%@%@%@%@%@%@",bundle,tempData.appID,adSize,uuid,time,TOKEN_KEY]];
     [infoDict setObject:token forKey:@"to"];
     
-    [infoDict setObject:[NSString stringWithFormat:@"%d",tempData.subjectToGDPR] forKey:@"gdpr"];
+    [infoDict setObject:[NSString stringWithFormat:@"%d",tempData.subjectToGDPR] forKey:AdView_IABConsent_SubjectToGDPR];
     if (tempData.consentString && tempData.consentString.length) {
-        [infoDict setObject:tempData.consentString forKey:@"consent"];
+        [infoDict setObject:tempData.consentString forKey:AdView_IABConsent_ConsentString];
     } else {
-        [infoDict setObject:@"0" forKey:@"consent"];
+        [infoDict setObject:@"0" forKey:AdView_IABConsent_ConsentString];
     }
     
     //这里的字段需要和 AVRequestItem 一样名称
-    [infoDict setObject:[NSString stringWithFormat:@"%d",tempData.CMPPresent] forKey:@"CMPPresent"];
+    [infoDict setObject:[NSString stringWithFormat:@"%d",tempData.CMPPresent] forKey:AdView_IABConsent_CMPPresent];
        
        if (tempData.parsedPurposeConsents) {
-           [infoDict setObject:tempData.parsedPurposeConsents forKey:@"parsedPurposeConsents"];
+           [infoDict setObject:tempData.parsedPurposeConsents forKey:AdView_IABConsent_ParsedPurposeConsents];
        }
        
        if (tempData.parsedVendorConsents) {
-           [infoDict setObject:tempData.parsedVendorConsents forKey:@"parsedVendorConsents"];
+           [infoDict setObject:tempData.parsedVendorConsents forKey:AdView_IABConsent_ParsedVendorConsents];
        }
        
        //CCPA
        if (tempData.ccpaString) {
-           [infoDict setObject:tempData.ccpaString forKey:@"us_privacy"];
+           [infoDict setObject:tempData.ccpaString forKey:AdView_IABConsent_CCPA];
        }
 }
 

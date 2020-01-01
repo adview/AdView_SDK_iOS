@@ -6,11 +6,11 @@
 #import "AdViewReachability.h"
 #import "AdViewAdManager.h"
 
-NSString *const AdView_IABConsent_CMPPresent = @"IABConsent_CMPPresent";
-NSString *const AdView_IABConsent_SubjectToGDPR = @"IABConsent_SubjectToGDPR";
-NSString *const AdView_IABConsent_ConsentString = @"IABConsent_ConsentString";
-NSString *const AdView_IABConsent_ParsedPurposeConsents = @"IABConsent_ParsedPurposeConsents";
-NSString *const AdView_IABConsent_ParsedVendorConsents = @"IABConsent_ParsedVendorConsents";
+NSString *const AdView_IABConsent_SubjectToGDPR = @"gdpr";
+NSString *const AdView_IABConsent_ConsentString = @"consent";
+NSString *const AdView_IABConsent_CMPPresent = @"CMPPresent";
+NSString *const AdView_IABConsent_ParsedPurposeConsents = @"parsedPurposeConsents";
+NSString *const AdView_IABConsent_ParsedVendorConsents = @"parsedVendorConsents";
 NSString *const AdView_IABConsent_CCPA = @"us_privacy";
 
 @interface AdViewView ()

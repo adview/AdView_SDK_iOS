@@ -422,25 +422,25 @@ static const SZRequestItem gGetItems[] =
     }
         
     //GDPR
-    [_infoDict setObject:[NSString stringWithFormat:@"%d",condition.gdprApplicability] forKey:@"gdpr"];
+    [_infoDict setObject:[NSString stringWithFormat:@"%d",condition.gdprApplicability] forKey:AdView_IABConsent_SubjectToGDPR];
     if (condition.consentString && condition.consentString.length) {
-        [_infoDict setObject:condition.consentString forKey:@"consent"];
+        [_infoDict setObject:condition.consentString forKey:AdView_IABConsent_ConsentString];
     } else {
-        [_infoDict setObject:@"0" forKey:@"consent"];
+        [_infoDict setObject:@"0" forKey:AdView_IABConsent_ConsentString];
     }
-    [_infoDict setObject:[NSString stringWithFormat:@"%d",condition.CMPPresent] forKey:@"CMPPresent"];
+    [_infoDict setObject:[NSString stringWithFormat:@"%d",condition.CMPPresent] forKey:AdView_IABConsent_CMPPresent];
     
     if (condition.parsedPurposeConsents) {
-        [_infoDict setObject:condition.parsedPurposeConsents forKey:@"parsedPurposeConsents"];
+        [_infoDict setObject:condition.parsedPurposeConsents forKey:AdView_IABConsent_ParsedPurposeConsents];
     }
     
     if (condition.parsedVendorConsents) {
-        [_infoDict setObject:condition.parsedVendorConsents forKey:@"parsedVendorConsents"];
+        [_infoDict setObject:condition.parsedVendorConsents forKey:AdView_IABConsent_ParsedVendorConsents];
     }
     
     //CCPA
     if (condition.CCPAString) {
-        [_infoDict setObject:condition.CCPAString forKey:@"us_privacy"];
+        [_infoDict setObject:condition.CCPAString forKey:AdView_IABConsent_CCPA];
     }
     
     CGSize screenSize = [[UIScreen mainScreen] bounds].size;
