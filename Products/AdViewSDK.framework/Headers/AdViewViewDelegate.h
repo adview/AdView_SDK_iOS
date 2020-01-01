@@ -104,11 +104,6 @@ extern NSString *const AdView_IABConsent_ParsedVendorConsents;
  */
 - (NSString *)appPwd;
 
-/**
- * The weChat applet developer id
- */
-- (NSString *)miniProgramAdDeveloperId;
-
 - (UIColor  *)adTextColor;
 - (UIColor  *)adBackgroundColor;
 - (NSString *)adBackgroundImgName;

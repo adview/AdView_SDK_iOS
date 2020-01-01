@@ -207,9 +207,9 @@ static bool isFirst = YES;
                                                          selector:@selector(updateCountdownLabelText)
                                                          userInfo:nil
                                                           repeats:YES];
-    }
-    else
+    } else {
         [self performDissmissSpread];
+    }
 }
 
 //添加开屏承载界面和最下方Banner的logo
@@ -749,27 +749,26 @@ static bool isFirst = YES;
     }
 }
 
-#pragma mark - 开屏方法
+#pragma mark - 创建开屏
 - (void)loadAdSpreadView {
     CGFloat availableWidth  = _adPrefSize.width;
     CGFloat availableHeight = _adPrefSize.height - [_adSpreadView viewWithTag:LOGOIMAGE_TAG].bounds.size.height;
     CGSize availableSize = CGSizeMake(availableWidth, availableHeight);
     UIView * iv = [self.adContent makeAdSpreadViewWithSize:availableSize
                                            withWebDelegate:self];
-    //如果是webview等待加载成功
-    if ([iv.subviews.firstObject isKindOfClass:[AdViewMraidWebView class]])
-    {
+    if ([iv.subviews.firstObject isKindOfClass:[AdViewMraidWebView class]]) {   //如果是webview的,等待webview加载回调之后再倒计时
         self.loadingAdView = iv;
-        self.loadingAdView.alpha = 0;
+        self.loadingAdView.alpha = 0;       //是webview设置透明然后加上去.等待加载完毕再开始倒计时
+    } else {
+            [self spreadDisplayCountDown];  //不是webview的直接开始倒计时
     }
-    [self spreadViewAddContentView:iv];
+    [self spreadViewAddContentView:iv];     //因为wkWebview必须先添加到视图上,才会开始渲染,所以先加上.但是alpha设置为0
 }
 
 //开屏底层(已经添加到rAdview) 添加广告素材View
 - (void)spreadViewAddContentView:(UIView *)contentView
 {
-    if (contentView)
-    {
+    if (contentView) {
         [self.adSpreadView addSubview:contentView];
     }
     
@@ -793,8 +792,7 @@ static bool isFirst = YES;
     }
     
     inActiviteTime = [[NSDate date] timeIntervalSince1970];
-    if ([self.rAdView.delegate respondsToSelector: @selector(didReceivedAd:)])
-    {
+    if ([self.rAdView.delegate respondsToSelector: @selector(didReceivedAd:)]) {
         [self.rAdView.delegate didReceivedAd:self.rAdView];
     }
 }
@@ -803,6 +801,8 @@ static bool isFirst = YES;
 - (void)spreadDisplayCountDown {
     [self cancelAnimTimer];
     _spreadShowTime = _adContent.forceTime + _adContent.relayTime;
+    
+    //倒计时l开始前等待期
     self.animTimer = [NSTimer scheduledTimerWithTimeInterval:_adContent.forceTime
                                                       target:self
                                                     selector:@selector(delayShowSpread)
@@ -2567,8 +2567,8 @@ static NSMutableDictionary *aBclickPositionDic;
         isWebView = YES;
         [self adjustInstlView:mraidWebView];
     } else if (_advertType == AdViewSpread) {
-        self.loadingAdView.alpha = 1;
-        [self spreadDisplayCountDown];
+        self.loadingAdView.alpha = 1;   //显示出来
+        [self spreadDisplayCountDown];  //开始倒计时
     }
     
     //因为wkWebView在加载完毕时，没有渲染完毕。导致判断为白条
