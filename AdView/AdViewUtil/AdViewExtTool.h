@@ -119,7 +119,7 @@ typedef enum enumMacAddrFmtType {
 + (void)showViewModal:(UIViewController*)toShow FromRoot:(UIViewController*)root;
 + (void)dismissViewModal:(UIViewController*)inShow;
 //将size2的尺寸按照size的大小等比放大
-+ (void)scaleEnlargesTheSize:(CGSize *)size toSize:(CGSize *)size2;
++ (void)scaleEnlargesTheSize:(CGSize)size toSize:(CGSize *)size2;
 
 /**
  字典转换json字符串

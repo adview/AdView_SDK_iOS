@@ -17,6 +17,7 @@
 
 #define ADSERVERREPORT 1
 #define LOGOIMAGE_TAG 10001
+#define COUNT_DOWN_LABEL_TAG 15133
 
 //第一次请求插屏
 static bool isFirst = YES;
@@ -158,17 +159,14 @@ static bool isFirst = YES;
 //添加开屏倒计时Label
 - (void)addCountdownLabel
 {
-    UILabel * label = [self.adSpreadView viewWithTag:15133];
-    if (nil != label)
-    {
-        return;
-    }
+    UILabel * label = [self.adSpreadView viewWithTag:COUNT_DOWN_LABEL_TAG];
+    if (nil != label) return;
     
     CGSize size = self.adSpreadView.frame.size;
     UILabel *countdownLabel = [[UILabel alloc] initWithFrame:CGRectMake(size.width - 70, STATUSBARHIDDENHEIGHT + 10, 60, 30)];
     countdownLabel.text = [NSString stringWithFormat:@"%ds 跳过",self.adContent.relayTime];
     countdownLabel.textAlignment = NSTextAlignmentCenter;
-    countdownLabel.tag = 15133;
+    countdownLabel.tag = COUNT_DOWN_LABEL_TAG;
     countdownLabel.backgroundColor = [AdViewExtTool hexStringToColor:@"#bb404040"];
     countdownLabel.textColor = [UIColor whiteColor];
     countdownLabel.layer.cornerRadius = 5;
@@ -187,7 +185,7 @@ static bool isFirst = YES;
 {
     if (self.didClosedSpread) return;
 
-    UILabel * label = [self.adSpreadView viewWithTag:15133];
+    UILabel * label = [self.adSpreadView viewWithTag:COUNT_DOWN_LABEL_TAG];
     self.adContent.relayTime--;
     if (self.adContent.relayTime == 0)
     {
@@ -207,9 +205,9 @@ static bool isFirst = YES;
                                                          selector:@selector(updateCountdownLabelText)
                                                          userInfo:nil
                                                           repeats:YES];
-    } else {
-        [self performDissmissSpread];
     }
+    else
+        [self performDissmissSpread];
 }
 
 //添加开屏承载界面和最下方Banner的logo
@@ -261,7 +259,7 @@ static bool isFirst = YES;
         img = [UIImage imagesNamedFromCustomBundle:@"adview_spread_logo.png"];
     }
     CGSize imgSize = img.size;
-    [AdViewExtTool scaleEnlargesTheSize:&screenSize toSize:&imgSize];   //将图片的尺寸按照屏幕宽度等比缩放
+    [AdViewExtTool scaleEnlargesTheSize:self.rAdView.frame.size toSize:&imgSize];   //将图片的尺寸按照屏幕宽度等比缩放
     UIImageView *imgView = [[UIImageView alloc] initWithImage:img];
     imgView.tag = LOGOIMAGE_TAG;
     imgView.frame = CGRectMake(0, _adSpreadView.frame.size.height - imgSize.height, imgSize.width, imgSize.height);
@@ -276,6 +274,12 @@ static bool isFirst = YES;
     //对外demo里不要这样调用私有API
     messageSend(self.rAdView,@selector(showWithRootViewController:),modalVc);
 #pragma clang diagnostic pop
+    
+//对于spread,最好是用window
+//    UIWindow * spreadWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+//    spreadWindow.windowLevel = UIWindowLevelStatusBar + 100;
+//    [spreadWindow addSubview:self.rAdView];
+//    [spreadWindow makeKeyAndVisible];
     
     [self cancelAnimTimer];
     self.animTimer = [NSTimer scheduledTimerWithTimeInterval:SPREAD_EXIST_MOST
@@ -760,7 +764,7 @@ static bool isFirst = YES;
         self.loadingAdView = iv;
         self.loadingAdView.alpha = 0;       //是webview设置透明然后加上去.等待加载完毕再开始倒计时
     } else {
-            [self spreadDisplayCountDown];  //不是webview的直接开始倒计时
+        [self spreadDisplayCountDown];      //不是webview的直接开始倒计时
     }
     [self spreadViewAddContentView:iv];     //因为wkWebview必须先添加到视图上,才会开始渲染,所以先加上.但是alpha设置为0
 }
@@ -773,16 +777,11 @@ static bool isFirst = YES;
     }
     
     UIImageView * logoView = (UIImageView*)[self.adSpreadView viewWithTag:LOGOIMAGE_TAG];
-    if (logoView)
-    {
-        if (self.adContent.spreadType == 2 || self.adContent.spreadVat == AdSpreadShowTypeImageCover)
-        {
+    if (logoView) {
+        if (self.adContent.spreadType == 2 || self.adContent.spreadVat == AdSpreadShowTypeImageCover) {
             [logoView removeFromSuperview];
-        }
-        else if(self.adContent.spreadType == 1)
-        {
-            if (self.adContent.spreadVat == AdSpreadShowTypeAllCenter)
-            {
+        } else if(self.adContent.spreadType == 1) {
+            if (self.adContent.spreadVat == AdSpreadShowTypeAllCenter) {
                 CGRect rect = logoView.frame;
                 rect.origin.y = contentView.frame.size.height + contentView.frame.origin.y;
                 logoView.frame = rect;
@@ -791,6 +790,11 @@ static bool isFirst = YES;
         }
     }
     
+    UILabel * countLabel = [self.adSpreadView viewWithTag:COUNT_DOWN_LABEL_TAG];
+    if (countLabel) {
+        [self.adSpreadView bringSubviewToFront:countLabel];
+    }
+
     inActiviteTime = [[NSDate date] timeIntervalSince1970];
     if ([self.rAdView.delegate respondsToSelector: @selector(didReceivedAd:)]) {
         [self.rAdView.delegate didReceivedAd:self.rAdView];
@@ -801,8 +805,6 @@ static bool isFirst = YES;
 - (void)spreadDisplayCountDown {
     [self cancelAnimTimer];
     _spreadShowTime = _adContent.forceTime + _adContent.relayTime;
-    
-    //倒计时l开始前等待期
     self.animTimer = [NSTimer scheduledTimerWithTimeInterval:_adContent.forceTime
                                                       target:self
                                                     selector:@selector(delayShowSpread)

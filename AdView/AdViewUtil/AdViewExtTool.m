@@ -1072,12 +1072,12 @@ static AdViewExtTool *gAdViewExtTool = nil;
     [inShow dismissViewControllerAnimated:YES completion:nil];
 }
 
-+ (void)scaleEnlargesTheSize:(CGSize *)size toSize:(CGSize *)size2 //将size2的尺寸按照size的大小等比放大
++ (void)scaleEnlargesTheSize:(CGSize)size toSize:(CGSize *)size2 //将size2的尺寸按照size的大小等比放大
 {
     if (size2->width < 1 || size2->height < 1) return;
     
-    CGFloat scaleX = size->width / size2->width;
-    CGFloat scaleY = size->height / size2->height;
+    CGFloat scaleX = size.width / size2->width;
+    CGFloat scaleY = size.height / size2->height;
     
     CGFloat scale = scaleX<scaleY?scaleX:scaleY;
     
