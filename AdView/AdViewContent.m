@@ -250,8 +250,7 @@ static int getRandomInt(int range) {
 @synthesize forceTime;
 @synthesize relayTime;
 @synthesize cacheTime;
-@synthesize spreadType;
-@synthesize spreadVat;
+@synthesize spreadVat = _spreadVat;
 @synthesize deformationMode;
 
 @synthesize extendShowUrl;
@@ -1518,11 +1517,13 @@ static float scaleEnlargesTheSize(CGSize *size, CGSize *size2)
     return showTypeVal;
 }
 
-- (UIView *)makeAdSpreadViewWithSize:(CGSize)size withWebDelegate:(id)webDelegate
-{
-    UIView * ret = nil;
-    AdViewAdSHowType showTypeVal = self.adShowType;
+//构建SpreadView除了logo的部分
+- (UIView *)makeAdSpreadViewWithSize:(CGSize)size withWebDelegate:(id)webDelegate {
+    //根据可供绘制的尺寸对Model中的广告原尺寸进行缩放
+    CGSize adSize = CGSizeMake(_adWidth, _adHeight);
+    [AdViewExtTool scaleEnlargesTheSize:size toSize:&adSize];
     
+    AdViewAdSHowType showTypeVal = self.adShowType;
     int nImgFrame = self.nCurFrame;
     self.nCurFrame ++;
     
@@ -1536,27 +1537,22 @@ static float scaleEnlargesTheSize(CGSize *size, CGSize *size2)
     spreadImgViewRect = CGRectMake(0, 0, 0, 0);
 
     UIView * contentView;
-    if (AdViewAdSHowType_WebView == showTypeVal || AdViewAdSHowType_WebView_Content == showTypeVal || AdViewAdSHowType_WebView_Video == showTypeVal)
-    {
+    if (AdViewAdSHowType_WebView == showTypeVal || AdViewAdSHowType_WebView_Content == showTypeVal || AdViewAdSHowType_WebView_Video == showTypeVal) {
         // 根据变形模式调整尺寸
-        if(self.deformationMode == AdSpreadDeformationModeAll)
-        {
-            self.adHeight = (self.spreadType == 1) ? (size.height - size.width / 4) : size.height;
+        if(self.deformationMode == AdSpreadDeformationModeAll) {
+            self.adHeight = (self.spreadType == AdViewSpreadLogoState_Show) ? (size.height - size.width / 4) : size.height;
             self.adWidth = size.width;
         }
-        contentView = [self makeWebViewFrame:CGRectMake(0, 0, self.adWidth, self.adHeight)
+        contentView = [self makeWebViewFrame:CGRectMake(0, 0, adSize.width, adSize.height)
                                     showType:showTypeVal
                                  webDelegate:webDelegate];
-    }
-    else if (AdViewAdSHowType_FullGif == showTypeVal && nil != imgItem0.imgData)
-    {
+    } else if (AdViewAdSHowType_FullGif == showTypeVal && nil != imgItem0.imgData) {
         CGSize orgSize = imgItem0.img.size;
         kOpenAPIScaleCGSize(&size, &orgSize);
         
         // 根据变形模式调整尺寸
-        if(self.deformationMode == AdSpreadDeformationModeImage || self.deformationMode == AdSpreadDeformationModeAll)
-        {
-            orgSize.height = (self.spreadType == 1) ? (size.height - size.width / 4): size.height;
+        if(self.deformationMode == AdSpreadDeformationModeImage || self.deformationMode == AdSpreadDeformationModeAll) {
+            orgSize.height = (self.spreadType == AdViewSpreadLogoState_Show) ? (size.height - size.width / 4): size.height;
             orgSize.width = size.width;
         }
         
@@ -1565,9 +1561,7 @@ static float scaleEnlargesTheSize(CGSize *size, CGSize *size2)
         NSString *string = @"<meta charset='utf-8'><style type='text/css'>* { padding: 0px; margin: 0px;}a:link { text-decoration: none;}</style><div  style='width: 100%; height: 100%;'><img src=\"%@\" width=\"%dpx\" height=\"%dpx\" ></div>";
         string = [NSString stringWithFormat:string,imgItem0.imgUrl,(int)size.width,(int)size.height];
         [(UIWebView*)contentView loadHTMLString:string baseURL:nil];
-    }
-    else if (AdViewAdSHowType_AdFillImageText == showTypeVal)
-    {
+    } else if (AdViewAdSHowType_AdFillImageText == showTypeVal) {
         UIImage* image = imgItem0.img;
         
         CGSize ruleSize = CGSizeMake(300, 250);
@@ -1582,7 +1576,6 @@ static float scaleEnlargesTheSize(CGSize *size, CGSize *size2)
         contentView.layer.cornerRadius = 4;
         contentView.layer.masksToBounds = YES;
         contentView.layer.borderWidth = 1;
-        //填满整个view
         contentView.contentMode = UIViewContentModeScaleAspectFit;
         contentView.layer.borderColor = [[UIColor colorWithRed:1 green:1 blue:1 alpha:0.1] CGColor];
         contentView.frame = CGRectMake(0, 0, ruleSize.width, ruleSize.height);
@@ -1613,9 +1606,12 @@ static float scaleEnlargesTheSize(CGSize *size, CGSize *size2)
         }
         contentView.frame = CGRectMake(0, 0, imgViewSize.width, imgViewSize.height);
     }
+    UIView * ret = nil;
     ret = [[UIView alloc] initWithFrame:CGRectMake(0, 0, size.width, size.height)];
-    ret.backgroundColor = [UIColor whiteColor];
-    [self tiaozhengsize:ret imageSize:contentView.frame.size bgViewSize:size];
+    ret.backgroundColor = [UIColor clearColor];
+    
+//    [self tiaozhengsize:ret imageSize:contentView.frame.size bgViewSize:size];
+    
     contentView.center = CGPointMake(ret.center.x, contentView.center.y);
     [self conversionClickSizeWith:contentView.frame.size];
     
@@ -1634,19 +1630,12 @@ static float scaleEnlargesTheSize(CGSize *size, CGSize *size2)
     
     [ret addSubview:contentView];
     [ret sendSubviewToBack:contentView];
-    
-    AdViewLogDebug(@"imageView frame:%@", NSStringFromCGRect(contentView.frame));
-    AdViewLogDebug(@"spread clickArea frame changed after:%@", NSStringFromCGRect(self.clickSize));
-    AdViewLogDebug(@"spread textArea frame:%@", NSStringFromCGRect(self.spreadTextViewSize));
-    
-    [self addLogoLabelWithView:ret adType:AdViewSpread];
+
+    [self addLogoLabelWithView:contentView adType:AdViewSpread];
     return ret;
 }
 
-- (void)resizeSpreadView:(UIView *)spreadView contentView:(UIView *)contentView containerSize:(CGSize)containerSize {
-    
-}
-
+//view:返回的背景视图  imageViewSize:广告的真实尺寸
 - (void)tiaozhengsize:(UIView*)view imageSize:(CGSize)imgViewSize bgViewSize:(CGSize)size{
     CGRect textViewRect = CGRectMake(0, imgViewSize.height, imgViewSize.width, imgViewSize.width/4);
     UIView *textView = [self makeAdSpreadTextViewWithFrame:textViewRect];
@@ -1669,7 +1658,7 @@ static float scaleEnlargesTheSize(CGSize *size, CGSize *size2)
     textView.frame = textViewRect;
     CGRect finalRect = CGRectMake(0, 0, size.width, imgViewSize.height + textViewHgt);
     
-    switch (self.spreadVat) {
+    switch (_spreadVat) {
         case AdSpreadShowTypeTop:{
             finalRect = CGRectMake(0, 0, size.width, imgViewSize.height + textViewHgt);
         }
@@ -1702,10 +1691,9 @@ static float scaleEnlargesTheSize(CGSize *size, CGSize *size2)
         textViewRect.origin.y += finalRect.origin.y;
         textViewRect.origin.x += finalRect.origin.x;
         self.spreadTextViewSize = textViewRect;
+        [view addSubview:textView];
     }else
         self.spreadTextViewSize = CGRectMake(0, 0, 0, 0);
-
-    [view addSubview:textView];
 }
 
 /*创建插屏返回的UIView*///12 -4 修改为此方法中不做center处理而是在返回uiview后再给赋值

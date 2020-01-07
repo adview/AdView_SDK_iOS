@@ -21,6 +21,11 @@ typedef enum enumMacAddrFmtType {
 	MacAddrFmtType_UpperCaseColon = 3,	//both.
 }MacAddrFmtType;
 
+typedef NS_ENUM (NSInteger, AdViewLocale){
+    AdViewLocale_Chinese,
+    AdViewLocale_English
+};
+
 @interface AdViewExtTool : NSObject<UIWebViewDelegate>
 {
 	NSMutableDictionary		*objDict;
@@ -58,9 +63,11 @@ typedef enum enumMacAddrFmtType {
 @property (nonatomic, strong) NSString *srcString; //存储src渠道
 @property (nonatomic, strong) NSArray *replaceStrArr; //需要替换的宏字符串数组
 + (AdViewExtTool*)sharedTool;
-
 + (NSData*)gzipData: (NSData*)pUncompressedData;
 + (BOOL) getMacAddressBytes:(void *)out_mac;
+
+//本地化
++ (AdViewLocale)locale;
 
 - (NSString*)getMacAddress:(MacAddrFmtType)fmt;
 - (NSString *)deviceIPAdress;
@@ -139,12 +146,16 @@ typedef enum enumMacAddrFmtType {
 + (BOOL)isViewable:(UIView *)view;  //view是否可见
     
 - (NSString*)replaceDefineString:(NSString *)urlString;
+
 // 获取测试所需数据
 - (NSDictionary*)getDataForTest;
+
 // 存储测试所需数据
 - (void)storDataForTest;
+
 //获取手机型号
 - (NSString *)iphoneType;
+
 //下载图片
 void UIImageFromURL( NSURL * URL, void (^imageBlock)(UIImage * image), void (^errorBlock)(void));
 

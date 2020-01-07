@@ -130,6 +130,11 @@ typedef enum {
     AdSpreadShowTypeLogoOrTextCover,    //图片+【文字】+logo大于屏幕高的时候logo和文字覆盖在图片上。文字衔接在logo上，logo放在底部。
 }AdSpreadShowType;
 
+typedef NS_ENUM(NSInteger, AdViewSpreadLogoState) {
+    AdViewSpreadLogoState_Show = 1,
+    AdViewSpreadLogoState_Hidden = 2
+};
+
 typedef enum {
     AdSpreadDeformationModeNone = 0,    //不变形
     AdSpreadDeformationModeImage,       //只有图片平铺，html排版按照AdSpreadShowType规则

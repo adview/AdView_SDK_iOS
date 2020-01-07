@@ -163,8 +163,10 @@ static bool isFirst = YES;
     if (nil != label) return;
     
     CGSize size = self.adSpreadView.frame.size;
-    UILabel *countdownLabel = [[UILabel alloc] initWithFrame:CGRectMake(size.width - 70, STATUSBARHIDDENHEIGHT + 10, 60, 30)];
-    countdownLabel.text = [NSString stringWithFormat:@"%ds 跳过",self.adContent.relayTime];
+    CGFloat space = 10;
+    NSString * jumpButtonTitle = [AdViewExtTool locale] == AdViewLocale_Chinese ? @"跳过" : @"Skip";
+    UILabel *countdownLabel = [[UILabel alloc] initWithFrame:CGRectMake(size.width - 60 - space, space, 60, 30)];
+    countdownLabel.text = [NSString stringWithFormat:@"%ds %@",self.adContent.relayTime, jumpButtonTitle];
     countdownLabel.textAlignment = NSTextAlignmentCenter;
     countdownLabel.tag = COUNT_DOWN_LABEL_TAG;
     countdownLabel.backgroundColor = [AdViewExtTool hexStringToColor:@"#bb404040"];
@@ -192,7 +194,8 @@ static bool isFirst = YES;
         [label removeFromSuperview];
         [self performDissmissSpread];
     }
-    label.text = [NSString stringWithFormat:@"%ds 跳过",self.adContent.relayTime];
+    NSString * jumpButtonTitle = [AdViewExtTool locale] == AdViewLocale_Chinese ? @"跳过" : @"Skip";
+    label.text = [NSString stringWithFormat:@"%ds %@",self.adContent.relayTime, jumpButtonTitle];
 }
 
 - (void)delayShowSpread
@@ -210,16 +213,13 @@ static bool isFirst = YES;
         [self performDissmissSpread];
 }
 
-//添加开屏承载界面和最下方Banner的logo
-- (void)addSpreadBackgroundAndLogo
-{
+//直接添加开屏承载界面和最下方Banner的logo
+- (void)addSpreadBackgroundAndLogo {
     UIColor * bgColor = [UIColor whiteColor];
-    if (self.rAdView.delegate && [self.rAdView.delegate respondsToSelector:@selector(adBackgroundColor)])
-    {
+    if (self.rAdView.delegate && [self.rAdView.delegate respondsToSelector:@selector(adBackgroundColor)]) {
         bgColor = [self.rAdView.delegate adBackgroundColor];
     }
     CGSize screenSize = [UIScreen mainScreen].bounds.size;
-
     UIViewController * modalVc;
     if (self.rAdView.delegate && [self.rAdView.delegate respondsToSelector:@selector(viewControllerForShowModal)]) {
         modalVc = [self.rAdView.delegate viewControllerForShowModal];
@@ -227,47 +227,49 @@ static bool isFirst = YES;
         modalVc = [UIApplication sharedApplication].keyWindow.rootViewController;
     }
     
-    if (modalVc.prefersStatusBarHidden) {
-        self.rAdView.frame = CGRectMake(0, 0, screenSize.width, screenSize.height);
-    }else{
-        self.rAdView.frame = CGRectMake(0, STATUSBARHIDDENHEIGHT, screenSize.width, screenSize.height - STATUSBARHIDDENHEIGHT);
+    //safeArea
+    UIEdgeInsets inset = UIEdgeInsetsZero;
+    if (@available(iOS 11.0, *)) {
+        inset = modalVc.view.safeAreaInsets;
     }
-
-    self.adSpreadView = [[UIImageView alloc] initWithFrame:self.rAdView.bounds];
-    _adSpreadView.backgroundColor = bgColor;
+    self.rAdView.frame = CGRectMake(0, 0, screenSize.width, screenSize.height);
+    self.rAdView.backgroundColor = bgColor;
+    
+    CGRect spreadAdViewFrame = CGRectMake(inset.left,
+                                          inset.top,
+                                          _rAdView.frame.size.width - inset.left,
+                                          _rAdView.frame.size.height - inset.top - inset.bottom);
+    self.adSpreadView = [[UIImageView alloc] initWithFrame:spreadAdViewFrame];
+    _adSpreadView.backgroundColor = _rAdView.backgroundColor;
     [self.rAdView addSubview:_adSpreadView];
     
     NSString *bgImgName = nil;
-    if (self.rAdView.delegate && [self.rAdView.delegate respondsToSelector:@selector(adBackgroundImgName)])
-    {
+    if (self.rAdView.delegate && [self.rAdView.delegate respondsToSelector:@selector(adBackgroundImgName)]) {
         bgImgName = [self.rAdView.delegate adBackgroundImgName];
     }
-    if (bgImgName && [bgImgName length] > 0)
-    {
+    if (bgImgName && [bgImgName length] > 0) {
         _adSpreadView.image = [UIImage imageNamed:bgImgName];
     }
 
     NSString *logoName = nil;
-    if (self.rAdView.delegate && [self.rAdView.delegate respondsToSelector:@selector(logoImgName)])
-    {
+    if (self.rAdView.delegate && [self.rAdView.delegate respondsToSelector:@selector(logoImgName)]) {
         logoName = [self.rAdView.delegate logoImgName];
     }
-    self.adPrefSize = _adSpreadView.frame.size;
+    _adPrefSize = _adSpreadView.frame.size;
     
-    UIImage *img = [UIImage imageNamed:logoName];
-    if (!img) {
-        img = [UIImage imagesNamedFromCustomBundle:@"adview_spread_logo.png"];
+    UIImage *logoImg = [UIImage imageNamed:logoName];
+    if (!logoImg) {
+        logoImg = [UIImage imagesNamedFromCustomBundle:@"adview_spread_logo.png"];
     }
-    CGSize imgSize = img.size;
-    [AdViewExtTool scaleEnlargesTheSize:self.rAdView.frame.size toSize:&imgSize];   //将图片的尺寸按照屏幕宽度等比缩放
-    UIImageView *imgView = [[UIImageView alloc] initWithImage:img];
-    imgView.tag = LOGOIMAGE_TAG;
-    imgView.frame = CGRectMake(0, _adSpreadView.frame.size.height - imgSize.height, imgSize.width, imgSize.height);
-    [_adSpreadView addSubview:imgView];
+    CGSize logoImgSize = logoImg.size;
+    [AdViewExtTool scaleEnlargesTheSize:spreadAdViewFrame.size toSize:&logoImgSize];   //将logo图片的尺寸按照屏幕宽度等比缩放
     
-    AdViewLogDebug(@"%s - logo frame:%@", __FUNCTION__,NSStringFromCGRect(imgView.frame));
-    AdViewLogDebug(@"%s - adSpreadView frame:%@", __FUNCTION__,NSStringFromCGRect(_adSpreadView.frame));
-    
+    //底部Logo图
+    UIImageView *logoImgView = [[UIImageView alloc] initWithImage:logoImg];
+    logoImgView.tag = LOGOIMAGE_TAG;
+    logoImgView.frame = CGRectMake(0, _adSpreadView.frame.size.height - logoImgSize.height, logoImgSize.width, logoImgSize.height);
+    [_adSpreadView addSubview:logoImgView];
+        
     void (* messageSend)(id, SEL, id) = (void (*)(id, SEL, id))objc_msgSend;
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wundeclared-selector"
@@ -755,12 +757,15 @@ static bool isFirst = YES;
 
 #pragma mark - 创建开屏
 - (void)loadAdSpreadView {
-    CGFloat availableWidth  = _adPrefSize.width;
-    CGFloat availableHeight = _adPrefSize.height - [_adSpreadView viewWithTag:LOGOIMAGE_TAG].bounds.size.height;
+    UIView * logoImageView = [_adSpreadView viewWithTag:LOGOIMAGE_TAG];
+    CGFloat availableWidth  = _adSpreadView.frame.size.width;
+    CGFloat availableHeight = _adSpreadView.frame.size.height - logoImageView.frame.size.height;
     CGSize availableSize = CGSizeMake(availableWidth, availableHeight);
     UIView * iv = [self.adContent makeAdSpreadViewWithSize:availableSize
                                            withWebDelegate:self];
-    if ([iv.subviews.firstObject isKindOfClass:[AdViewMraidWebView class]]) {   //如果是webview的,等待webview加载回调之后再倒计时
+    
+    //如果是webview的,等待webview加载回调之后再倒计时
+    if ([iv.subviews.firstObject isKindOfClass:[AdViewMraidWebView class]]) {
         self.loadingAdView = iv;
         self.loadingAdView.alpha = 0;       //是webview设置透明然后加上去.等待加载完毕再开始倒计时
     } else {
@@ -770,17 +775,18 @@ static bool isFirst = YES;
 }
 
 //开屏底层(已经添加到rAdview) 添加广告素材View
-- (void)spreadViewAddContentView:(UIView *)contentView
-{
+- (void)spreadViewAddContentView:(UIView *)contentView {
     if (contentView) {
         [self.adSpreadView addSubview:contentView];
     }
     
+    //后台设置允许logo以及不允许显示logo
     UIImageView * logoView = (UIImageView*)[self.adSpreadView viewWithTag:LOGOIMAGE_TAG];
     if (logoView) {
-        if (self.adContent.spreadType == 2 || self.adContent.spreadVat == AdSpreadShowTypeImageCover) {
+        if (self.adContent.spreadType == AdViewSpreadLogoState_Hidden || self.adContent.spreadVat == AdSpreadShowTypeImageCover) {
             [logoView removeFromSuperview];
-        } else if(self.adContent.spreadType == 1) {
+            AdViewLogInfo(@"Logo已经移除");
+        } else if(self.adContent.spreadType == AdViewSpreadLogoState_Show) {
             if (self.adContent.spreadVat == AdSpreadShowTypeAllCenter) {
                 CGRect rect = logoView.frame;
                 rect.origin.y = contentView.frame.size.height + contentView.frame.origin.y;

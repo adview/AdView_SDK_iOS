@@ -104,12 +104,11 @@ typedef enum {
     NSString *monSstring;           //展示代发网址
     NSString *monCstring;           //点击代发网址
     
-    CGRect clickSize; //开屏可点击区域
-    CGRect spreadTextViewSize; //开屏文字部分区域（可点击）
-    int forceTime; //强制展示时间
-    int relayTime; //延迟展示时间
-    NSTimeInterval cacheTime; //图片缓存时间戳
-    int spreadType; //开屏类型（目前暂指是否含有logo） 1 -- 有logo；2 -- 没有logo
+    CGRect clickSize;               //开屏可点击区域
+    CGRect spreadTextViewSize;      //开屏文字部分区域（可点击）
+    int forceTime;                  //强制展示时间
+    int relayTime;                  //延迟展示时间
+    NSTimeInterval cacheTime;       //图片缓存时间戳
     
     NSDictionary *extendShowUrl;    // 扩展需要代发的展示汇报
     NSArray *extendClickUrl;        // 扩展需要代发的点击汇报
@@ -119,7 +118,7 @@ typedef enum {
     NSString *clickPosition;        //点击相对位置
     CGRect spreadImgViewRect;       //开屏图片&图文 的 frame
     
-    NSDictionary *nativeDict;//原生广告数组
+    NSDictionary *nativeDict;       //原生广告数组
 }
 @property (nonatomic, assign) AdViewAdPlatType adPlatType;     //广告API请求平台类型
 @property (nonatomic, assign) BOOL		adWebLoaded;
@@ -196,7 +195,7 @@ typedef enum {
 @property (nonatomic, assign) int forceTime;                //开屏规定时间，单位秒
 @property (nonatomic, assign) int relayTime;                //开屏延长时间，单位秒
 @property (nonatomic, assign) NSTimeInterval cacheTime;
-@property (nonatomic, assign) int spreadType;               //1.有LOGO 2.无LOGO
+@property (nonatomic, assign) AdViewSpreadLogoState spreadType;         //有无LOGO
 @property (nonatomic, assign) AdSpreadShowType spreadVat;
 @property (nonatomic, assign) AdSpreadDeformationMode deformationMode;
 @property (nonatomic, assign) AdvertType adverType;

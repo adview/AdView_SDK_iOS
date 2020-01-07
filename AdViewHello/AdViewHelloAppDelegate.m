@@ -43,7 +43,7 @@ static char *gAppIDs[AD_NUM] =
     "1C1F7F471E",
     "4c55f6cdf1f179087844bfb4665d2547",
     "SDK2014100110085937vf3muqfqoplbf",
-    "SDK20191028101142elckebuvuy5lczp", //AdViewOverseas
+    "SDK20191028101142elckebuvuy5lczp", //AdViewOverseas SDK20191606040826utni417gaot5alt
     "SDK20131916070901pjqdp6hdghhf34w"
 };
 
@@ -73,8 +73,8 @@ static char *gAppPWDs[AD_NUM] = {
     }
     
     //传positionId是mrec广告,不传是普通Banner
-    self.adView = [AdViewView requestBannerSize:AdViewBannerSize_320x50 positionId:nil delegate:self];
-//    self.adView = [AdViewView requestBannerSize:AdViewBannerSize_300x250 positionId:@"POSID9pgkbm6lflf7" delegate:self];
+//    self.adView = [AdViewView requestBannerSize:AdViewBannerSize_320x50 positionId:nil delegate:self];
+    self.adView = [AdViewView requestBannerSize:AdViewBannerSize_300x250 positionId:@"POSID4zt29dh4zbp4" delegate:self];
     [_viewController.view addSubview:self.adView];
 }
 

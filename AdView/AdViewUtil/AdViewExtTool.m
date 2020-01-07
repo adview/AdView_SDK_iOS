@@ -286,6 +286,11 @@ static AdViewExtTool *gAdViewExtTool = nil;
     return compressedData;
 }
 
++ (AdViewLocale)locale {
+    NSString *languageCode = [NSLocale preferredLanguages][0];
+    return [languageCode containsString:@"zh"] ? AdViewLocale_Chinese : AdViewLocale_English;
+}
+
 // Return the local MAC addy 
 // Courtesy of FreeBSD hackers email list 
 // Accidentally munged during previous update. Fixed thanks to mlamb. 
@@ -1072,8 +1077,8 @@ static AdViewExtTool *gAdViewExtTool = nil;
     [inShow dismissViewControllerAnimated:YES completion:nil];
 }
 
-+ (void)scaleEnlargesTheSize:(CGSize)size toSize:(CGSize *)size2 //将size2的尺寸按照size的大小等比放大
-{
+//将size2的尺寸按照size的大小等比放大
++ (void)scaleEnlargesTheSize:(CGSize)size toSize:(CGSize *)size2 {
     if (size2->width < 1 || size2->height < 1) return;
     
     CGFloat scaleX = size.width / size2->width;
