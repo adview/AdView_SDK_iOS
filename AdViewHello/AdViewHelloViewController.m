@@ -15,8 +15,8 @@
 #import "VideoViewController.h"
 
 //native广告key
-#define APP_KEY @"SDK20191028101142elckebuvuy5lczp"
-#define POSITION_ID @"POSID3j2hw0mkldfb"
+#define APP_KEY @"SDK20191606040826utni417gaot5alt"
+#define POSITION_ID @"POSIDqzbu56gormfi"
 
 @interface SettingView : UIView<UIPickerViewDataSource,UIPickerViewDelegate,UITextFieldDelegate> {
     UIPickerView *keyPickerView;
@@ -192,10 +192,10 @@
 }
 
 //如果需要开屏，则承载开屏的controller最好隐藏状态栏。不然很丑
-- (BOOL)prefersStatusBarHidden
-{
-    return YES;
-}
+//- (BOOL)prefersStatusBarHidden
+//{
+//    return YES;
+//}
 
 - (void)viewDidLoad
 {

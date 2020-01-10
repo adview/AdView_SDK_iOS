@@ -21,9 +21,9 @@ static const char* hostArr[] = {
 };
 
 typedef struct RequestItem {
-    const char *idStr;
-    const char *defVal;
-    int bMust;
+    const char *idStr;  //key
+    const char *defVal; //默认值
+    int bMust;          //是否必须
 }AVRequestItem;
 
 static const AVRequestItem requestItems[] = {
@@ -70,7 +70,11 @@ static const AVRequestItem requestItems[] = {
     {"CMPPresent","0",0},
     {"parsedPurposeConsents","0",0},
     {"parsedVendorConsents","0",0},
-    {"us_privacy","0",0}   //加州CCPA
+    {"us_privacy","0",0},   //加州CCPA
+    
+    {"omid","0",1},         //是否支持OMSDK
+    {"omidpn","",0},        //合作方名称
+    {"omidpv","",0}         //SDK过审版本
 };
 
 static const int requestItemSize = sizeof(requestItems)/sizeof(AVRequestItem);
@@ -100,7 +104,11 @@ static const int requestItemSize = sizeof(requestItems)/sizeof(AVRequestItem);
     }
     
     for (int i = 0; i < requestItemSize; i++) {
-        [infoDict setValue:[NSString stringWithUTF8String:requestItems[i].defVal] forKey:[NSString stringWithUTF8String:requestItems[i].idStr]];
+        AVRequestItem tmpItem = requestItems[i];
+        if (tmpItem.bMust) {
+            [infoDict setValue:[NSString stringWithUTF8String:tmpItem.defVal]
+                        forKey:[NSString stringWithUTF8String:tmpItem.idStr]];
+        }
     }
     
     NSString *bundle = [[NSBundle mainBundle] bundleIdentifier];
@@ -260,19 +268,30 @@ static const int requestItemSize = sizeof(requestItems)/sizeof(AVRequestItem);
     
     //这里的字段需要和 AVRequestItem 一样名称
     [infoDict setObject:[NSString stringWithFormat:@"%d",tempData.CMPPresent] forKey:AdView_IABConsent_CMPPresent];
-       
-       if (tempData.parsedPurposeConsents) {
-           [infoDict setObject:tempData.parsedPurposeConsents forKey:AdView_IABConsent_ParsedPurposeConsents];
-       }
-       
-       if (tempData.parsedVendorConsents) {
-           [infoDict setObject:tempData.parsedVendorConsents forKey:AdView_IABConsent_ParsedVendorConsents];
-       }
-       
-       //CCPA
-       if (tempData.ccpaString) {
-           [infoDict setObject:tempData.ccpaString forKey:AdView_IABConsent_CCPA];
-       }
+    
+    if (tempData.parsedPurposeConsents) {
+        [infoDict setObject:tempData.parsedPurposeConsents forKey:AdView_IABConsent_ParsedPurposeConsents];
+    }
+    
+    if (tempData.parsedVendorConsents) {
+        [infoDict setObject:tempData.parsedVendorConsents forKey:AdView_IABConsent_ParsedVendorConsents];
+    }
+    
+    //CCPA
+    if (tempData.ccpaString) {
+        [infoDict setObject:tempData.ccpaString forKey:AdView_IABConsent_CCPA];
+    }
+    
+    //OMSDK
+    BOOL OMSDKOK = [AdViewOMBaseAdUnitManager isOMSDKExist] && [AdViewOMBaseAdUnitManager isCompatible];
+    NSString * omid = OMSDKOK ? @"1" : @"0";
+    [infoDict setObject:omid forKey:@"omid"];
+    if (OMSDKOK) {
+        NSString * omidpn = ADVGOSDKPartnerNameString;
+        NSString * omidpv = ADVIEWSDK_PARTENER_VERSION;
+        [infoDict setObject:omidpn forKey:@"omidpn"];
+        [infoDict setObject:omidpv forKey:@"omidpv"];
+    }
 }
 
 - (NSString*)getUrlStr {
@@ -295,6 +314,7 @@ static const int requestItemSize = sizeof(requestItems)/sizeof(AVRequestItem);
     [self addTemporaryData:tempData];
     NSString *urlStr = [self getUrlStr];
     NSURL *url = [NSURL URLWithString:urlStr];
+    AdViewLogInfo(@"%@",url);
     NSMutableURLRequest *req = [NSMutableURLRequest requestWithURL:url];
     req.timeoutInterval = 10;
     [req setValue:@"gzip" forHTTPHeaderField:@"Accept-Encoding"];

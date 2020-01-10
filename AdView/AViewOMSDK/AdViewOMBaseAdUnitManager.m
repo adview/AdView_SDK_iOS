@@ -20,6 +20,16 @@ NSString * const OMIDSDKVersion = @"{\"v\":\"1.2.15\",\"a\":\"1\"}";
 
 @implementation AdViewOMBaseAdUnitManager
 
++ (BOOL)isOMSDKExist {
+    Class OMIDAdViewSDKClass = NSClassFromString(@"OMIDAdviewSDK");
+    return OMIDAdViewSDKClass ? YES : NO;
+}
+
++ (BOOL)isCompatible {
+    Class OMIDAdViewSDKClass = NSClassFromString(@"OMIDAdviewSDK");
+    return [OMIDAdViewSDKClass isCompatibleWithOMIDAPIVersion:OMIDSDKVersion];
+}
+
 + (BOOL)isActive {
     Class OMIDAdViewSDKClass = NSClassFromString(@"OMIDAdviewSDK");
     return [[OMIDAdViewSDKClass sharedInstance] isActive];
@@ -53,12 +63,13 @@ NSString * const OMIDSDKVersion = @"{\"v\":\"1.2.15\",\"a\":\"1\"}";
 - (instancetype)init {
     Class OMIDAdViewSDKClass = NSClassFromString(@"OMIDAdviewSDK");
     if (OMIDAdViewSDKClass) {
-        if (![OMIDAdViewSDKClass isCompatibleWithOMIDAPIVersion:OMIDSDKVersion]) nil;
+        if (![self.class isCompatible]) {
+            AdViewLogInfo(@"%s - OMDSK does not compatible",__FUNCTION__);
+            return nil;
+        }
         
         if (self = [super init]) {
-            if (OMIDAdViewSDKClass) {
-                _OMAdViewSDK = [OMIDAdViewSDKClass sharedInstance];
-            }
+            _OMAdViewSDK = [OMIDAdViewSDKClass sharedInstance];
         }
     } else {
         AdViewLogInfo(@"%s - OMDSK does not exits",__FUNCTION__);
@@ -139,11 +150,10 @@ NSString * const OMIDSDKVersion = @"{\"v\":\"1.2.15\",\"a\":\"1\"}";
 #pragma mark - getter
 - (OMIDAdviewAdSession *)OMIDAdSession {
     if (!_OMIDAdSession) {
-        Class OMIDAdViewSDKClass = NSClassFromString(@"OMIDAdviewSDK");
         Class OMIDAdviewPartnerClass = NSClassFromString(@"OMIDAdviewPartner");
         Class OMIDAdviewAdSessionClass = NSClassFromString(@"OMIDAdviewAdSession");
 
-        BOOL bCompatible = [OMIDAdViewSDKClass isCompatibleWithOMIDAPIVersion:OMIDSDKVersion];
+        BOOL bCompatible = [self.class isCompatible];
         if (!bCompatible) {
             AdViewLogInfo(@"OMSDK - not compatible");
             return nil;

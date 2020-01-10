@@ -101,7 +101,6 @@
 - (void)performDissmissSpread;
 
 - (void)setClickPositionDicWithTouchPoint:(CGPoint)touchPoint isBegan:(BOOL)isBegan;
-- (void)setClickPositionDicForClickAdInstlAction;
 
 - (void)adinstlShowWithController:(UIViewController*)controller;
 

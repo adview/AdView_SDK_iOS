@@ -74,8 +74,7 @@ typedef struct tagSZRequestItem{
 
 #define SZITEM_ARRSIZE(arr) (sizeof(arr)/sizeof(SZRequestItem))
 
-static const SZRequestItem gGetItems[] =
-{
+static const SZRequestItem gGetItems[] = {
     {"html5","0",1},
     {"bi","",1},
     {"an","",0},
@@ -104,9 +103,13 @@ static const SZRequestItem gGetItems[] =
     {"ar","",0},
     {"bty","0",1},          //电池电量
     
+    {"omid","0",1},         //是否支持OMSDK
+    {"omidpn","Adview",0},        //合作方名称
+    {"omidpv","",0},        //SDK过审版本
+    
     {"gdpr","0",1},         //是否使用GDPR
     {"consent","0",1},      //GDPR的consentString
-    {"CMPPresent","0",0},   //
+    {"CMPPresent","0",0},
     {"parsedPurposeConsents","0",0},
     {"parsedVendorConsents","0",0},
     {"us_privacy","0",0},   //加州CCPA
@@ -208,22 +211,21 @@ static const SZRequestItem gGetItems[] =
 }
 
 //初始化一些系统参数
-- (void)initInfo
-{
-    if (nil == _infoDict)
-    {
-		_infoDict = [[NSMutableDictionary alloc] init];
-	}
-	
+- (void)initInfo {
+    if (nil == _infoDict) {
+        _infoDict = [[NSMutableDictionary alloc] init];
+    }
+    
     //使用默认值初始化infoDict
-	for (int i = 0; i < SZITEM_ARRSIZE(gGetItems); i++)
-	{
-		[_infoDict setObject:[NSString stringWithUTF8String:gGetItems[i].defVal]
-					 forKey:[NSString stringWithUTF8String:gGetItems[i].idStr]];
-	}
+    for (int i = 0; i < SZITEM_ARRSIZE(gGetItems); i++) {
+        SZRequestItem tmpItem = gGetItems[i];
+        if (tmpItem.bMust) {
+            [_infoDict setObject:[NSString stringWithUTF8String:tmpItem.defVal]
+                          forKey:[NSString stringWithUTF8String:tmpItem.idStr]];
+        }
+    }
     
     NSString *bundle = [[NSBundle mainBundle] bundleIdentifier];
-    
     [_infoDict setObject:bundle forKey:@"bi"];
     
     NSString *appName = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleDisplayName"];
@@ -443,6 +445,17 @@ static const SZRequestItem gGetItems[] =
         [_infoDict setObject:condition.CCPAString forKey:AdView_IABConsent_CCPA];
     }
     
+    //OMSDK
+    BOOL OMSDKOK = [AdViewOMBaseAdUnitManager isOMSDKExist] && [AdViewOMBaseAdUnitManager isCompatible];
+    NSString * omid = OMSDKOK ? @"1" : @"0";
+    [_infoDict setObject:omid forKey:@"omid"];
+    if (OMSDKOK) {
+        NSString * omidpn = ADVGOSDKPartnerNameString;
+        NSString * omidpv = ADVIEWSDK_PARTENER_VERSION;
+        [_infoDict setObject:omidpn forKey:@"omidpn"];
+        [_infoDict setObject:omidpv forKey:@"omidpv"];
+    }
+
     CGSize screenSize = [[UIScreen mainScreen] bounds].size;
     BOOL  bIsLand = [AdViewExtTool getDeviceDirection];
     CGFloat screenWidth =  bIsLand?screenSize.height:screenSize.width;
@@ -1157,8 +1170,8 @@ static const SZRequestItem gGetItems[] =
     if(self.adType == AdViewSpread) {
         NSString *rectStr = [dicAd objectForKey:@"pta"];
         adContent.clickSize = [self makeRectWithString:rectStr];
-        adContent.relayTime = [[dicAd objectForKey:@"dlt"] intValue];
-        adContent.forceTime = [[dicAd objectForKey:@"rlt"] intValue];
+        adContent.relayTime = [[dicAd objectForKey:@"dlt"] intValue];   //延长时间 - 3
+        adContent.forceTime = [[dicAd objectForKey:@"rlt"] intValue];   //规定时间 - 0
         adContent.spreadType = [[dicAd objectForKey:@"sdt"] intValue];
         adContent.cacheTime = [[dicAd objectForKey:@"cet"] longLongValue];
         adContent.spreadVat = [[dicAd objectForKey:@"vat"] intValue];

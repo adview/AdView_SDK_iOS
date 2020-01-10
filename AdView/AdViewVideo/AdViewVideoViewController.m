@@ -70,7 +70,7 @@
 @property (nonatomic, strong) UIButton        * replayButton;                       //重播
 @property (nonatomic, assign) BOOL networkCurrentlyReachable;
 @property (nonatomic, assign) float scale;
-@property (nonatomic, assign) BOOL isFirstHandle;                                   // 是否为第一次处理mediaFile
+@property (nonatomic, assign) BOOL isFirstHandle;                                           // 是否为第一次处理mediaFile
 @property (nonatomic, strong) NSMutableArray <AdViewVastNonVideoView *>* companionViewArr;  // 伴随 View数组
 @property (nonatomic, strong) NSMutableArray <AdViewVastNonVideoView *>* iconViewArr;       // ICON View数组
 @property (nonatomic, strong) NSMutableArray <AdViewVastNonVideoView *>* endCardArray;      // endCard数组
@@ -119,8 +119,8 @@
 - (void)omsdkManagerInitWithCreativeModel:(AdViewVastCreative *)creativeModel extensionModel:(ADVGVastExtensionModel *)extensionModel {
     if (!_omsdkManager) {
         self.omsdkManager = [[AdViewOMAdVideoManager alloc] initWithVendorKey:extensionModel.vendor
-                                                     verificationParameters:extensionModel.verificationParameters
-                                                verificationScriptURLString:extensionModel.VerificationScriptURLString];
+                                                       verificationParameters:extensionModel.verificationParameters
+                                                  verificationScriptURLString:extensionModel.VerificationScriptURLString];
         
         [_omsdkManager setDuration:[creativeModel.duration floatValue]];
         [_omsdkManager setPosition:OMIDPositionStandalone];
@@ -299,7 +299,9 @@
 - (void)notifationTheResultForAllVideoPlayEnded {
     if (!self->_inPlayProcess && self->_allVideoFinished) {
         [self addCloseButton];
-        if (!self.endCardArray.count) {[self addReplayButton];}
+        if (!self.endCardArray.count) {
+            [self addReplayButton];
+        }
         if (self->_haveSuccess) {
             if (self.delegate && [self.delegate respondsToSelector:@selector(vastVideoAllPlayEnd:)]) {
                 [self.delegate vastVideoAllPlayEnd:self];
@@ -370,7 +372,7 @@
 
 - (void)waitUserAllowPlay {
     if (self.contentView.mediaFileType == ADVASTMediaFileType_Video && self.adverType == AdViewRewardVideo) {
-        //如果是普通VAST,粘贴缩略图,现实点击界面
+        //如果是普通VAST,粘贴缩略图,现实点击播放
         [self showvideoThumbnailView];
     } else {
         //其他类型直接播放
@@ -504,38 +506,28 @@
 
 #pragma mark - 关闭按钮 & 重播按钮 method
 - (void)addCloseButton {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.view addSubview:self.closeButton];
-    });
+    [self.view addSubview:self.closeButton];
 }
 
 - (void)addReplayButton {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.view addSubview:self.replayButton];
-    });
+    [self.view addSubview:self.replayButton];
 }
 
 #pragma mark - timeButton method
 - (void)addSkipButton {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.view addSubview:self.skipButton];
-    });
+    [self.view addSubview:self.skipButton];
 }
 
 - (void)removeSkipButton {
     if (_skipButton) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.skipButton removeFromSuperview];
-            self.skipButton = nil;
-        });
+        [self.skipButton removeFromSuperview];
+        self.skipButton = nil;
     }
 }
 
 //添加结束背景
 - (void)creatEndCard {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self creatCompationViewsInArray:&self->_endCardArray];
-    });
+    [self creatCompationViewsInArray:&self->_endCardArray];
 }
 
 #pragma mark - icon & companion 伴随
@@ -775,36 +767,32 @@
 }
 
 #pragma mark - play status method
-//播放开始前的UI变化
+//播放开始,更新UI
 - (void)changUIBeforePlayVideo {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self removeIconAndCompanion];
-        [self removeEndCard];
-        [self removeActivityView];
-        [self removeThumbnailView];
-        
-        [self addSoundView];
-        [self addCountDownView];
-        
-//        if (!self.contentView.cancelCountdown) {
-//            [self createIcon];
-//            [self creatCompationViewsInArray:&self->companionViewArr];
-//        }
-    });
+    [self removeIconAndCompanion];
+    [self removeEndCard];
+    [self removeActivityView];
+    [self removeThumbnailView];
+    
+    [self addSoundView];
+    [self addCountDownView];
+    
+//    if (!self.contentView.cancelCountdown) {
+//        [self createIcon];
+//        [self creatCompationViewsInArray:&self->companionViewArr];
+//    }
 }
 
-//移除声音、倒计时、伴随、图标、菊花、跳过按钮
+//播放结束.更新UI
 - (void)changUIAfterPlayVideo {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self removeSoundView];
-        [self removeCountDownView];
-        [self removeIconAndCompanion];
-        [self removeSkipButton];
-        [self removeActivityView];
-        
-        //播放结束就加endCard
-        [self creatEndCard];
-    });
+    [self removeSoundView];
+    [self removeCountDownView];
+    [self removeIconAndCompanion];
+    [self removeSkipButton];
+    [self removeActivityView];
+    
+    //播放结束就加endCard
+    [self creatEndCard];
 }
 
 //本次播放是否成功
@@ -836,35 +824,43 @@
 
 #pragma mark - AdViewVideoGeneralViewDelegate
 - (void)videoStartPlay {
-    _isPlaying = YES;
-    _videoIsFinished = NO;
-    
-    [self changUIBeforePlayVideo];
-    
-    if (self.delegate && [self.delegate respondsToSelector:@selector(vastVideoPlayStatus:)]) {
-        [self.delegate vastVideoPlayStatus:AdViewVideoPlayStart];
-    }
-    
-    //开始监测
-    [_omsdkManager startMeasurement];
-    [_omsdkManager videoOrientation:self.orientation];
-    [_omsdkManager reportQuartileChange:AdViewOMSDKVideoQuartile_Start];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self->_isPlaying = YES;
+        self->_videoIsFinished = NO;
+        
+        [self changUIBeforePlayVideo];
+        
+        if (self.delegate && [self.delegate respondsToSelector:@selector(vastVideoPlayStatus:)]) {
+            [self.delegate vastVideoPlayStatus:AdViewVideoPlayStart];
+        }
+        
+        //开始监测
+        [self.omsdkManager startMeasurement];
+        [self.omsdkManager videoOrientation:self.orientation];
+        [self.omsdkManager reportQuartileChange:AdViewOMSDKVideoQuartile_Start];
+    });
 }
 
 - (void)videotEndPlay {
-    [_omsdkManager reportQuartileChange:AdViewOMSDKVideoQuartile_Complete];
-    [self playFinishedIsSuccess:YES];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.omsdkManager reportQuartileChange:AdViewOMSDKVideoQuartile_Complete];
+        [self playFinishedIsSuccess:YES];
+    });
 }
 
 - (void)videoSkipped {
-    [_omsdkManager skipped];
-    if ([self.delegate respondsToSelector:@selector(vastVideoSkipped)]) {
-        [self.delegate vastVideoSkipped];
-    }
-    [self changUIAfterPlayVideo];
-    
-    [self addCloseButton];
-    if (!self.endCardArray.count) {[self addReplayButton];}
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.omsdkManager skipped];
+        if ([self.delegate respondsToSelector:@selector(vastVideoSkipped)]) {
+            [self.delegate vastVideoSkipped];
+        }
+        [self changUIAfterPlayVideo];
+        
+        [self addCloseButton];
+        if (!self.endCardArray.count) {
+            [self addReplayButton];
+        }
+    });
 }
 
 - (void)videoPaused {
@@ -876,7 +872,9 @@
 }
 
 - (void)videoPlayError {
-    [self playFinishedIsSuccess:NO];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self playFinishedIsSuccess:NO];
+    });
 }
 
 - (void)videoMute:(BOOL)tmpIsMute {

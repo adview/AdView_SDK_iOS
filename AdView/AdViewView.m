@@ -344,18 +344,6 @@ extern void setAdViewViewHost(const char *host);
     return YES;
 }
 
-#pragma mark - for 云图tv点击需求
-- (void)clickAdInstlAction
-{
-    AdViewAdManager *adViewManager = (AdViewAdManager*)_adViewManager;
-    if (adViewManager.advertType == AdViewInterstitial)
-    {
-        [adViewManager setClickPositionDicForClickAdInstlAction];
-        [[AdViewExtTool sharedTool] storeObject:@"0" forKey:@"{CLICKAREA}"];
-        [adViewManager performClickAction];
-    }
-}
-
 #pragma mark touch event
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {

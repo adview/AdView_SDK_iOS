@@ -229,8 +229,8 @@
     {
         if (self.video == nil)
         {
-            self.video = [AdViewVideo playVideoWithAppId:@"SDK20191028101142elckebuvuy5lczp"
-                                              positionId:@"POSIDfw4gzhspg1dx"
+            self.video = [AdViewVideo playVideoWithAppId:@"SDK20191606040826utni417gaot5alt"
+                                              positionId:@"POSID9pgkbm6lflf7"
                                                videoType:type
                                                 delegate:self];
         }

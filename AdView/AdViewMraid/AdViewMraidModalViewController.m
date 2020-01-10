@@ -112,10 +112,9 @@
 }
 
 // This is to hide the status bar on iOS 7.
-- (BOOL)prefersStatusBarHidden
-{
-    return YES;
-}
+//- (BOOL)prefersStatusBarHidden {
+//    return YES;
+//}
 
 #pragma mark - rotation/orientation
 

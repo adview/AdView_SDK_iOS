@@ -18,7 +18,6 @@
 @property (strong, nonatomic) UIViewController *controller; // 广告展示controller
 @property (assign, nonatomic) int responseCount;            // 回调响应次数
 @property (copy, nonatomic) NSArray *nativeAdArray;         // 原生广告数组
-#warning need append Ad size here 打底需要支持多种banner尺寸
 
 - (instancetype)initWithDataModel:(AdViewRolloverAdapterModel*)model;
 

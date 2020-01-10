@@ -320,13 +320,15 @@ typedef enum {
 - (void)newTimer
 {
     [self removeTimer];
-    loadTimeOut = [NSTimer scheduledTimerWithTimeInterval:kLoadTimeOut target:self selector:@selector(didLoadTimeOut) userInfo:nil repeats:NO];
+    loadTimeOut = [NSTimer scheduledTimerWithTimeInterval:kLoadTimeOut
+                                                   target:self
+                                                 selector:@selector(didLoadTimeOut)
+                                                 userInfo:nil
+                                                  repeats:NO];
 }
 
-- (void)removeTimer
-{
-    if (nil != loadTimeOut)
-    {
+- (void)removeTimer {
+    if (nil != loadTimeOut) {
         [loadTimeOut invalidate];
     }
     loadTimeOut = nil;

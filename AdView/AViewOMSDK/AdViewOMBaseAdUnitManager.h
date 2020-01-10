@@ -27,6 +27,12 @@ extern NSString *  VerificationParameters;
 @property (nonatomic, strong, readonly) OMIDAdviewAdEvents * OMIDAdEvent;       //事件发送
 @property (nonatomic, strong, readonly) OMIDAdviewAdSession * OMIDAdSession;    //OM会话
 
+/// OMSDK是否存在
++ (BOOL)isOMSDKExist;
+
+/// OMSDK是否匹配
++ (BOOL)isCompatible;
+
 //OMSDK活跃
 + (BOOL)isActive;
 

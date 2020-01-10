@@ -367,8 +367,8 @@
     //如果设置了这些,则提前初始化manager
     AdViewContent * content = [self matchNativeAdIDWith:nativeData];
     AdViewOMAdVideoManager * omsdkVideoManager = [[AdViewOMAdVideoManager alloc] initWithVendorKey:vendorKey
-                                                                        verificationParameters:verificationParameters
-                                                                   verificationScriptURLString:verificationScriptURLString];
+                                                                            verificationParameters:verificationParameters
+                                                                       verificationScriptURLString:verificationScriptURLString];
     omsdkVideoManager.autoPlay = autoPlay;
     omsdkVideoManager.position = position;
     omsdkVideoManager.volume   = videoPlayerVolume;
@@ -387,8 +387,8 @@
     } else {
         //图片
         omsdkManager = [[AdViewOMAdImageManager alloc] initWithVendorKey:content.nativeDict[@"omvendor"]
-                                                verificationParameters:content.nativeDict[@"ompara"]
-                                           verificationScriptURLString:content.nativeDict[@"omurl"]];
+                                                  verificationParameters:content.nativeDict[@"ompara"]
+                                             verificationScriptURLString:content.nativeDict[@"omurl"]];
     }
     [omsdkManager setMainAdview:view];
     for (UIView * view in friendlyViewArray) {

@@ -1540,7 +1540,7 @@ static float scaleEnlargesTheSize(CGSize *size, CGSize *size2)
     if (AdViewAdSHowType_WebView == showTypeVal || AdViewAdSHowType_WebView_Content == showTypeVal || AdViewAdSHowType_WebView_Video == showTypeVal) {
         // 根据变形模式调整尺寸
         if(self.deformationMode == AdSpreadDeformationModeAll) {
-            self.adHeight = (self.spreadType == AdViewSpreadLogoState_Show) ? (size.height - size.width / 4) : size.height;
+            self.adHeight = (self.spreadType == 1) ? (size.height - size.width / 4) : size.height;
             self.adWidth = size.width;
         }
         contentView = [self makeWebViewFrame:CGRectMake(0, 0, adSize.width, adSize.height)
@@ -1552,7 +1552,7 @@ static float scaleEnlargesTheSize(CGSize *size, CGSize *size2)
         
         // 根据变形模式调整尺寸
         if(self.deformationMode == AdSpreadDeformationModeImage || self.deformationMode == AdSpreadDeformationModeAll) {
-            orgSize.height = (self.spreadType == AdViewSpreadLogoState_Show) ? (size.height - size.width / 4): size.height;
+            orgSize.height = (self.spreadType == 1) ? (size.height - size.width / 4): size.height;
             orgSize.width = size.width;
         }
         
@@ -1568,11 +1568,11 @@ static float scaleEnlargesTheSize(CGSize *size, CGSize *size2)
         scaleEnlargesTheSize(&size, &ruleSize);
         
         contentView = [[ImageTextInstlView alloc] initWithIconImage:image
-                                                      Title:self.adTitle
-                                                   subTitle:self.adSubText
-                                                    message:self.adText
-                                                actinonType:self.adActionType
-                                                   delegate:self];
+                                                              Title:self.adTitle
+                                                           subTitle:self.adSubText
+                                                            message:self.adText
+                                                        actinonType:self.adActionType
+                                                           delegate:self];
         contentView.layer.cornerRadius = 4;
         contentView.layer.masksToBounds = YES;
         contentView.layer.borderWidth = 1;
@@ -1610,6 +1610,7 @@ static float scaleEnlargesTheSize(CGSize *size, CGSize *size2)
     ret = [[UIView alloc] initWithFrame:CGRectMake(0, 0, size.width, size.height)];
     ret.backgroundColor = [UIColor clearColor];
     
+//暂时根据vat字段进行布局处理
 //    [self tiaozhengsize:ret imageSize:contentView.frame.size bgViewSize:size];
     
     contentView.center = CGPointMake(ret.center.x, contentView.center.y);
