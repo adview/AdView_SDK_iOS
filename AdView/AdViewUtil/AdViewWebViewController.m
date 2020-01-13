@@ -154,9 +154,14 @@
     if (1 < nCount) [[arrToolItems objectAtIndex:1] setEnabled:[self.webView canGoForward]];
 }
 
-#pragma mark UIViewController override functions.
+- (instancetype)init {
+    if (self = [super init]) {
+        self.modalPresentationStyle = UIModalPresentationFullScreen;
+    }
+    return self;
+}
 
-// Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
+#pragma mark UIViewController override functions.
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -280,8 +285,7 @@
 
 #pragma mark UIWebViewDelegate
 
-- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request
- navigationType:(UIWebViewNavigationType)navigationType
+- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
 
     NSString *urlString = [[request URL] absoluteString];

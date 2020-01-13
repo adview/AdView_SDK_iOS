@@ -44,6 +44,7 @@ NSString *const AdView_IABConsent_CCPA = @"us_privacy";
 
 - (void)dealloc {
     self.adViewManager = nil;
+    AdViewLogInfo(@"%s",__FUNCTION__);
 }
 
 extern void setAdViewViewHost(const char *host);

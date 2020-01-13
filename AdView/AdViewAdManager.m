@@ -25,6 +25,7 @@ static bool isFirst = YES;
 @interface AdViewAdManager () <SKStoreProductViewControllerDelegate,AdViewMraidViewDelegate,AdViewVideoViewControllerDelegate,AdViewRolloverManagerDelegate>
 @property (nonatomic, assign) NSTimeInterval spreadShowTime;                //开屏展示的总时间
 @property (nonatomic, strong) AdViewVideoViewController * videoController;  //进行视频逻辑的controller
+@property (nonatomic, assign) BOOL storeViewControllerShow;                 //内置AppStore正在展示
 @end
 
 @implementation AdViewAdManager
@@ -101,6 +102,7 @@ static bool isFirst = YES;
             UITapGestureRecognizer * Clicktap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(closeAdInstl)];
             [_activity addGestureRecognizer:Clicktap];
         }
+        self.storeViewControllerShow = NO;
     }
     return self;
 }
@@ -276,13 +278,6 @@ static bool isFirst = YES;
     //对外demo里不要这样调用私有API
     messageSend(self.rAdView,@selector(showWithRootViewController:),modalVc);
 #pragma clang diagnostic pop
-    
-//对于spread,最好是用window
-//    UIWindow * spreadWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-//    spreadWindow.windowLevel = UIWindowLevelStatusBar + 100;
-//    [spreadWindow addSubview:self.rAdView];
-//    [spreadWindow makeKeyAndVisible];
-    
     [self cancelAnimTimer];
     self.animTimer = [NSTimer scheduledTimerWithTimeInterval:SPREAD_EXIST_MOST
                                                       target:self
@@ -291,14 +286,14 @@ static bool isFirst = YES;
                                                      repeats:NO];
 }
 
+//开屏倒计时结束
 - (void)performDissmissSpread
 {
     [self cancelDelayTimer];
     [self cancelAnimTimer];
     if (self.didClosedSpread) return;
     
-    if (self.rAdView.delegate && [self.rAdView.delegate respondsToSelector: @selector(adViewDidDismissScreen:)] && !self.rolloverManager)
-    {
+    if ([self.rAdView.delegate respondsToSelector:@selector(adViewDidDismissScreen:)] && !self.rolloverManager && !self.storeViewControllerShow) {
         [self.rAdView.delegate adViewDidDismissScreen:self.rAdView];
     }
 
@@ -1529,19 +1524,13 @@ static NSMutableDictionary *aBclickPositionDic;
 }
 
 //点击广告弹出的界面关闭通知
-- (void)notifyDismissScreen
-{
-    if (AdViewNative == _advertType)
-    {
-        if (self.nativeAdCloseBlock)
-        {
+- (void)notifyDismissScreen {
+    if (AdViewNative == _advertType) {
+        if (self.nativeAdCloseBlock) {
             self.nativeAdCloseBlock();
         }
-    }
-    else
-    {
-        if ([self.rAdView.delegate respondsToSelector:@selector(adViewDidDismissScreen:)])
-        {
+    } else {
+        if ([self.rAdView.delegate respondsToSelector:@selector(adViewDidDismissScreen:)]) {
             [self.rAdView.delegate adViewDidDismissScreen:self.rAdView];
         }
         [self resumeRequestAd];
@@ -1549,7 +1538,7 @@ static NSMutableDictionary *aBclickPositionDic;
 }
 
 //for other adPlat to count show times;
-- (void) sendMessageToOtherPlats
+- (void)sendMessageToOtherPlats
 {
     if ( self.adContent.otherShowURL!= nil)
     {
@@ -1768,7 +1757,7 @@ static NSMutableDictionary *aBclickPositionDic;
     {
         [self notifyPresentScreen];
         
-        AdViewWebViewController * webViewController = [[AdViewWebViewController alloc] initWithNibName:nil bundle:nil];
+        AdViewWebViewController * webViewController = [[AdViewWebViewController alloc] init];
         webViewController.delegate = self;
         webViewController.urlString = urlString;
         
@@ -1779,7 +1768,8 @@ static NSMutableDictionary *aBclickPositionDic;
             if (self.rAdView.delegate && [self.rAdView.delegate respondsToSelector:@selector(viewControllerForShowModal)]) {
                 root = [self.rAdView.delegate viewControllerForShowModal];
             }
-        } if (nil == root) {
+        }
+        if (nil == root) {
             root = [UIApplication sharedApplication].keyWindow.rootViewController;
         }
         
@@ -1819,14 +1809,13 @@ static NSMutableDictionary *aBclickPositionDic;
             }
         }
     }
-    
 }
 
 - (void)openWebBody:(NSString *)body
 {
     [self notifyPresentScreen];
     
-    AdViewWebViewController *webViewController = [[AdViewWebViewController alloc] initWithNibName:nil bundle:nil];
+    AdViewWebViewController *webViewController = [[AdViewWebViewController alloc] init];
     webViewController.delegate = self;
     webViewController.bodyString = body;
     UIViewController * root = nil;
@@ -1846,7 +1835,7 @@ static NSMutableDictionary *aBclickPositionDic;
 {
     [self notifyPresentScreen];
     
-    AdViewWebViewController *webViewController = [[AdViewWebViewController alloc] initWithNibName:nil bundle:nil];
+    AdViewWebViewController *webViewController = [[AdViewWebViewController alloc] init];
     webViewController.delegate = self;
     webViewController.webView = webView;
     UIViewController * root = nil;
@@ -1990,48 +1979,39 @@ static NSMutableDictionary *aBclickPositionDic;
     }
 }
 
-- (BOOL)isSuccessOpenAppStoreInAppWithUrlString:(NSString *)urlString
-{
+- (BOOL)isSuccessOpenAppStoreInAppWithUrlString:(NSString *)urlString {
     BOOL usingSK = YES;
-    if (self.rAdView.delegate && [self.rAdView.delegate respondsToSelector:@selector(usingSKStoreProductViewController)])
-    {
+    if ([self.rAdView.delegate respondsToSelector:@selector(usingSKStoreProductViewController)]) {
         usingSK = [self.rAdView.delegate usingSKStoreProductViewController];
     }
-    if (usingSK)
-    {
+    if (usingSK) {
         NSString *idStr = [[urlString componentsSeparatedByString:@"?"] firstObject];
         NSArray *arr = [idStr componentsSeparatedByString:@"id"];
         if (arr != nil && arr.count >= 2)
         {
             idStr = [arr objectAtIndex:1];
-            AdViewSKStoreProductViewController *storeProductViewController = [[AdViewSKStoreProductViewController alloc] init];// Configure View Controller
+            AdViewSKStoreProductViewController *storeProductViewController = [[AdViewSKStoreProductViewController alloc] init];
             [storeProductViewController setDelegate:self];
-            [storeProductViewController loadProductWithParameters:@{SKStoreProductParameterITunesItemIdentifier :idStr} completionBlock:nil];
+            [storeProductViewController loadProductWithParameters:@{SKStoreProductParameterITunesItemIdentifier:idStr}
+                                                  completionBlock:nil];
             UIViewController *root = nil;
-            if (self.advertType == AdViewNative)
-            {
+            if (self.advertType == AdViewNative) {
                 root = self.presentController;
-            }
-            else
-            {
-                if ([self.rAdView.delegate respondsToSelector:@selector(viewControllerForShowModal)])
-                {
+            } else {
+                if ([self.rAdView.delegate respondsToSelector:@selector(viewControllerForShowModal)]) {
                     root = [self.rAdView.delegate viewControllerForShowModal];
-                }
-                else
-                {
+                } else {
                     root = [UIApplication sharedApplication].keyWindow.rootViewController;
                 }
             }
-            if (root.presentedViewController)
-            {
+            
+            if (root.presentedViewController) {
                 [AdViewExtTool showViewModal:storeProductViewController FromRoot:root.presentedViewController];
-            }
-            else
-            {
+            } else {
                 [AdViewExtTool showViewModal:storeProductViewController FromRoot:root];
             }
             [self notifyPresentScreen];
+            self.storeViewControllerShow = YES;
             return YES;
         }
     }
@@ -2649,11 +2629,12 @@ static NSMutableDictionary *aBclickPositionDic;
 }
 
 #pragma mark - storeProductViewControllerDelegate
+//内置AppStore关闭回调
 - (void)productViewControllerDidFinish:(SKStoreProductViewController *)viewController {
     [self notifyDismissScreen];
+    self.storeViewControllerShow = NO;
     [viewController dismissViewControllerAnimated:YES completion:nil];
-    if (viewController.presentingViewController && [viewController.presentingViewController isKindOfClass:[AdViewWebViewController class]])
-    {
+    if (viewController.presentingViewController && [viewController.presentingViewController isKindOfClass:[AdViewWebViewController class]]) {
         [viewController.presentingViewController dismissViewControllerAnimated:YES completion:nil];
     }
 }

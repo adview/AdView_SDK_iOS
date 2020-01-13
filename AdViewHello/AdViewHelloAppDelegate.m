@@ -43,7 +43,7 @@ static char *gAppIDs[AD_NUM] =
     "1C1F7F471E",
     "4c55f6cdf1f179087844bfb4665d2547",
     "SDK2014100110085937vf3muqfqoplbf",
-    "SDK20191606040826utni417gaot5alt", //AdViewOverseas 测试:SDK20191606040826utni417gaot5alt 正式:SDK20191028101142elckebuvuy5lczp
+    "SDK20191827061240r6ak2kivievp0f7", //AdViewOverseas 测试:SDK20191606040826utni417gaot5alt 正式:SDK20191028101142elckebuvuy5lczp
     "SDK20131916070901pjqdp6hdghhf34w"
 };
 
